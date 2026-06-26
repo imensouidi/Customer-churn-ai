@@ -1,0 +1,29 @@
+# Data manipulation
+pandas
+numpy
+
+# Data visualization
+matplotlib
+seaborn
+plotly
+
+# Machine Learning
+scikit-learn
+xgboost
+imbalanced-learn
+
+# Deep Learning
+tensorflow
+
+# Explainability
+shap
+
+# Dashboard
+streamlit
+
+# Model persistence
+joblib
+
+# Notebook
+jupyter
+ipykernel
