@@ -15,7 +15,7 @@ imbalanced-learn
 # Deep Learning
 tensorflow
 
-# Explainability
+# Model interpretability
 shap
 
 # Dashboard
@@ -24,6 +24,7 @@ streamlit
 # Model persistence
 joblib
 
-# Notebook
+# Jupyter notebooks
 jupyter
+notebook
 ipykernel
