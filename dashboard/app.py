@@ -11,7 +11,7 @@ from sklearn.metrics import (
     recall_score, precision_score, accuracy_score,
     roc_curve, precision_recall_curve, average_precision_score
 )
-
+ 
 # ─────────────────────────────────────────────
 #  CONFIG
 # ─────────────────────────────────────────────
@@ -21,7 +21,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
+ 
 # ─────────────────────────────────────────────
 #  DESIGN TOKENS
 # ─────────────────────────────────────────────
@@ -32,19 +32,19 @@ WARNING    = "#F4A261"   # Orange risque
 NEUTRAL    = "#8D99AE"   # Gris texte secondaire
 SURFACE    = "#F8F9FA"   # Fond carte
 DARK       = "#0D1B2A"   # Fond sidebar
-
+ 
 # ─────────────────────────────────────────────
 #  CSS GLOBAL
 # ─────────────────────────────────────────────
 st.markdown(f"""
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap%27);
+ 
   html, body, [class*="css"] {{
       font-family: 'Inter', sans-serif;
       background-color: #F0F2F6;
   }}
-
+ 
   /* Sidebar */
   [data-testid="stSidebar"] {{
       background-color: {DARK};
@@ -60,7 +60,7 @@ st.markdown(f"""
       text-transform: uppercase;
       letter-spacing: 0.06em;
   }}
-
+ 
   /* Hero header */
   .hero {{
       background: linear-gradient(135deg, {PRIMARY} 0%, #2E4A7A 100%);
@@ -81,7 +81,7 @@ st.markdown(f"""
       color: #A8C0E0;
       margin: 0.4rem 0 0 0;
   }}
-
+ 
   /* KPI cards */
   .kpi-grid {{
       display: grid;
@@ -119,7 +119,7 @@ st.markdown(f"""
       color: {NEUTRAL};
       margin-top: 0.1rem;
   }}
-
+ 
   /* Section card */
   .section-card {{
       background: white;
@@ -132,12 +132,12 @@ st.markdown(f"""
       font-family: 'Space Grotesk', sans-serif;
       font-size: 1rem;
       font-weight: 700;
-      color: {PRIMARY};
+      color: white;
       margin-bottom: 1rem;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid #EEF2F7;
   }}
-
+ 
   /* Prediction badge */
   .pred-badge {{
       display: inline-block;
@@ -149,7 +149,7 @@ st.markdown(f"""
   }}
   .pred-churn  {{ background: #FEE2E2; color: {ACCENT}; }}
   .pred-stable {{ background: #DCFCE7; color: #15803D; }}
-
+ 
   /* Risk gauge text */
   .prob-text {{
       font-family: 'Space Grotesk', sans-serif;
@@ -157,7 +157,7 @@ st.markdown(f"""
       font-weight: 700;
       text-align: center;
   }}
-
+ 
   /* Tab styling */
   .stTabs [data-baseweb="tab"] {{
       font-weight: 500;
@@ -167,21 +167,21 @@ st.markdown(f"""
       color: {PRIMARY} !important;
       border-bottom-color: {PRIMARY} !important;
   }}
-
+ 
   /* Hide Streamlit branding */
   #MainMenu, footer, header {{ visibility: hidden; }}
   .block-container {{ padding-top: 1.5rem; }}
 </style>
 """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────
 #  CHARGEMENT DES MODÈLES ET DONNÉES
 # ─────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS_DIR = os.path.join(BASE_DIR, "..", "models")
 DATA_DIR   = os.path.join(BASE_DIR, "..", "data")
-
+ 
 @st.cache_resource
 def load_models():
     models = {}
@@ -195,43 +195,43 @@ def load_models():
         if os.path.exists(path):
             models[name] = joblib.load(path)
     return models
-
+ 
 @st.cache_resource
 def load_preprocessor():
     path = os.path.join(MODELS_DIR, "preprocessor.pkl")
     return joblib.load(path) if os.path.exists(path) else None
-
+ 
 @st.cache_data
 def load_test_data():
     X = np.load(os.path.join(MODELS_DIR, "X_test_prepared.npy"))
     y = np.load(os.path.join(MODELS_DIR, "y_test.npy"))
     return X, y
-
+ 
 @st.cache_data
 def load_full_data():
     path = os.path.join(DATA_DIR, "customer_churn_business_dataset.csv")
     if os.path.exists(path):
         return pd.read_csv(path)
     return None
-
+ 
 @st.cache_resource
-def get_feature_names(preprocessor):
-    if preprocessor is None:
+def get_feature_names(_preprocessor):
+    if _preprocessor is None:
         return []
-    num_features = list(preprocessor.transformers_[0][2])
-    cat_features = preprocessor.transformers_[1][1]['onehot'].get_feature_names_out(
-        preprocessor.transformers_[1][2]
+    num_features = list(_preprocessor.transformers_[0][2])
+    cat_features = _preprocessor.transformers_[1][1]['onehot'].get_feature_names_out(
+        _preprocessor.transformers_[1][2]
     ).tolist()
     return num_features + cat_features
-
+ 
 models       = load_models()
 preprocessor = load_preprocessor()
 X_test, y_test = load_test_data()
 df_full      = load_full_data()
 feature_names = get_feature_names(preprocessor)
-best_model   = models.get("XGBoost", list(models.values())[0] if models else None)
-
-
+#best_model   = models.get("XGBoost", list(models.values())[0] if models else None)
+best_model = models.get("Régression Logistique", list(models.values())[0] if models else None)
+ 
 # ─────────────────────────────────────────────
 #  SIDEBAR — NAVIGATION
 # ─────────────────────────────────────────────
@@ -247,13 +247,13 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     page = st.radio(
         "Navigation",
         ["📊 Vue d'ensemble", "🔮 Prédiction client", "📈 Performance des modèles", "🔍 Variables influentes"],
         label_visibility="collapsed"
     )
-
+ 
     st.markdown("---")
     st.markdown(f"""
     <div style="font-size:0.72rem; color:#475569; line-height:1.6;">
@@ -262,7 +262,7 @@ with st.sidebar:
         <span style="color:#2DC653;">● Opérationnel</span>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     if df_full is not None:
         st.markdown("---")
         st.markdown(f"""
@@ -272,36 +272,36 @@ with st.sidebar:
             {df_full['churn'].sum():,} churners ({df_full['churn'].mean()*100:.1f}%)
         </div>
         """, unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────
 #  PAGE 1 — VUE D'ENSEMBLE
 # ─────────────────────────────────────────────
 if page == "📊 Vue d'ensemble":
-
+ 
     st.markdown("""
     <div class="hero">
         <h1>🛡️ ChurnGuard — Rétention Client</h1>
         <p>Système intelligent de détection du risque de résiliation · Dataset Business SaaS · 10 000 clients</p>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     # KPIs globaux
     if df_full is not None and best_model is not None:
         y_proba_all = best_model.predict_proba(X_test)[:, 1]
         n_at_risk   = int((y_proba_all > 0.5).sum())
         pct_risk    = n_at_risk / len(y_test) * 100
         total_churn = int(y_test.sum())
-
+ 
         # Revenu à risque (si colonne disponible)
         if 'monthly_charges' in df_full.columns:
             avg_revenue = df_full['monthly_charges'].mean()
             revenue_at_risk = n_at_risk * avg_revenue
         else:
             revenue_at_risk = n_at_risk * 85  # estimation
-
+ 
         auc_score = roc_auc_score(y_test, y_proba_all)
-
+ 
         st.markdown(f"""
         <div class="kpi-grid">
             <div class="kpi-card danger">
@@ -326,11 +326,11 @@ if page == "📊 Vue d'ensemble":
             </div>
         </div>
         """, unsafe_allow_html=True)
-
+ 
     # Graphiques EDA
     if df_full is not None:
         col1, col2 = st.columns(2)
-
+ 
         with col1:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Répartition du churn</div>', unsafe_allow_html=True)
@@ -353,7 +353,7 @@ if page == "📊 Vue d'ensemble":
             st.pyplot(fig)
             plt.close()
             st.markdown('</div>', unsafe_allow_html=True)
-
+ 
         with col2:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Probabilités de churn — Distribution</div>', unsafe_allow_html=True)
@@ -374,7 +374,7 @@ if page == "📊 Vue d'ensemble":
                 st.pyplot(fig)
                 plt.close()
             st.markdown('</div>', unsafe_allow_html=True)
-
+ 
         # Distribution par contract_type si disponible
         if 'contract_type' in df_full.columns:
             col3, col4 = st.columns(2)
@@ -384,20 +384,25 @@ if page == "📊 Vue d'ensemble":
                 fig, ax = plt.subplots(figsize=(5, 3.2))
                 ct = df_full.groupby('contract_type')['churn'].mean().sort_values(ascending=False)
                 bars = ax.barh(ct.index, ct.values * 100,
-                               color=[ACCENT if v > 0.15 else WARNING if v > 0.08 else SUCCESS
-                                      for v in ct.values],
+                               color=[PRIMARY, WARNING, SUCCESS],
                                edgecolor='none', height=0.5)
+            
                 for bar, val in zip(bars, ct.values):
-                    ax.text(val * 100 + 0.5, bar.get_y() + bar.get_height()/2,
-                            f'{val*100:.1f}%', va='center', fontsize=9, fontweight='bold')
+                    ax.text(val * 100 - 0.5, bar.get_y() + bar.get_height()/2,
+                             f'{val*100:.1f}%', va='center', ha='right',
+            fontsize=9, fontweight='bold', color='white')            
+                #ax.set_xlabel('Taux de churn (%)', fontsize=9)
                 ax.set_xlabel('Taux de churn (%)', fontsize=9)
+                ax.set_xlim(0, 12)
+                plt.subplots_adjust(left=0.2)
                 ax.set_facecolor(SURFACE)
+                plt.setp(ax.get_yticklabels(), color='white')
                 fig.patch.set_alpha(0)
                 plt.tight_layout()
                 st.pyplot(fig)
                 plt.close()
                 st.markdown('</div>', unsafe_allow_html=True)
-
+ 
             with col4:
                 if 'monthly_charges' in df_full.columns:
                     st.markdown('<div class="section-card">', unsafe_allow_html=True)
@@ -416,35 +421,35 @@ if page == "📊 Vue d'ensemble":
                     st.pyplot(fig)
                     plt.close()
                     st.markdown('</div>', unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────
 #  PAGE 2 — PRÉDICTION CLIENT
 # ─────────────────────────────────────────────
 elif page == "🔮 Prédiction client":
-
+ 
     st.markdown("""
     <div class="hero">
         <h1>🔮 Simulateur de risque client</h1>
         <p>Renseignez le profil d'un client pour obtenir sa probabilité de churn en temps réel</p>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     if preprocessor is None or best_model is None:
         st.error("Modèle ou preprocessor introuvable. Vérifiez le dossier models/.")
     else:
         # Récupérer les colonnes attendues
         num_cols = list(preprocessor.transformers_[0][2])
         cat_cols = list(preprocessor.transformers_[1][2])
-
+ 
         col_form, col_result = st.columns([1.2, 1])
-
+ 
         with col_form:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Profil client</div>', unsafe_allow_html=True)
-
+ 
             input_data = {}
-
+ 
             # Champs numériques
             num_defaults = {
                 'age': (18, 80, 35),
@@ -458,7 +463,7 @@ elif page == "🔮 Prédiction client":
                 'nps_score': (0, 10, 7),
                 'csat_score': (0, 10, 7),
             }
-
+ 
             labels = {
                 'age': 'Âge',
                 'tenure_months': 'Ancienneté (mois)',
@@ -471,10 +476,10 @@ elif page == "🔮 Prédiction client":
                 'nps_score': 'NPS Score (0-10)',
                 'csat_score': 'CSAT Score (0-10)',
             }
-
+ 
             c1, c2 = st.columns(2)
             num_items = [col for col in num_cols if col in num_defaults]
-
+ 
             for i, col in enumerate(num_items):
                 target = c1 if i % 2 == 0 else c2
                 mn, mx, default = num_defaults.get(col, (0, 100, 0))
@@ -483,19 +488,19 @@ elif page == "🔮 Prédiction client":
                     input_data[col] = target.number_input(label, min_value=float(mn), max_value=float(mx), value=float(default), step=0.5)
                 else:
                     input_data[col] = target.number_input(label, min_value=int(mn), max_value=int(mx), value=int(default))
-
+ 
             # Champs catégoriels
             cat_defaults = {
                 'contract_type': ['Month-to-Month', 'One Year', 'Two Year'],
                 'gender': ['Male', 'Female'],
                 'payment_method': ['Credit Card', 'Bank Transfer', 'Electronic Check', 'Mailed Check'],
             }
-
+ 
             for col in cat_cols:
                 if col in cat_defaults:
                     label = col.replace('_', ' ').title()
                     input_data[col] = st.selectbox(label, cat_defaults[col])
-
+ 
             # Remplir les colonnes restantes avec des valeurs par défaut
             for col in num_cols:
                 if col not in input_data:
@@ -503,20 +508,20 @@ elif page == "🔮 Prédiction client":
             for col in cat_cols:
                 if col not in input_data:
                     input_data[col] = 'Unknown'
-
+ 
             predict_btn = st.button("🔮 Analyser ce client", type="primary", use_container_width=True)
             st.markdown('</div>', unsafe_allow_html=True)
-
+ 
         with col_result:
             st.markdown('<div class="section-card" style="min-height:400px;">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Résultat de l\'analyse</div>', unsafe_allow_html=True)
-
+ 
             if predict_btn:
                 input_df = pd.DataFrame([input_data])
                 X_input  = preprocessor.transform(input_df)
                 proba    = best_model.predict_proba(X_input)[0, 1]
                 pred     = int(proba > 0.5)
-
+ 
                 # Jauge visuelle
                 if pred == 1:
                     color_gauge = ACCENT
@@ -528,7 +533,7 @@ elif page == "🔮 Prédiction client":
                     badge_class = "pred-stable"
                     badge_text  = "✅ CLIENT STABLE"
                     msg = "Ce client présente un faible risque de résiliation. Maintenir le niveau de service."
-
+ 
                 st.markdown(f"""
                 <div style="text-align:center; padding: 1rem 0;">
                     <div class="prob-text" style="color:{color_gauge};">{proba*100:.1f}%</div>
@@ -538,7 +543,7 @@ elif page == "🔮 Prédiction client":
                     <span class="pred-badge {badge_class}">{badge_text}</span>
                 </div>
                 """, unsafe_allow_html=True)
-
+ 
                 # Barre de risque
                 fig, ax = plt.subplots(figsize=(5, 0.8))
                 ax.barh([0], [1], color='#E5E7EB', height=0.5)
@@ -549,9 +554,9 @@ elif page == "🔮 Prédiction client":
                 fig.patch.set_alpha(0)
                 st.pyplot(fig)
                 plt.close()
-
+ 
                 st.info(msg)
-
+ 
                 # Facteurs de risque détectés
                 st.markdown("**Facteurs détectés :**")
                 risk_factors = []
@@ -569,7 +574,7 @@ elif page == "🔮 Prédiction client":
                     risk_factors.append("✅ Aucun signal d'alerte majeur détecté")
                 for f in risk_factors:
                     st.markdown(f"- {f}")
-
+ 
             else:
                 st.markdown("""
                 <div style="text-align:center; padding:3rem 1rem; color:#94A3B8;">
@@ -579,22 +584,22 @@ elif page == "🔮 Prédiction client":
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-
+ 
             st.markdown('</div>', unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────
 #  PAGE 3 — PERFORMANCE DES MODÈLES
 # ─────────────────────────────────────────────
 elif page == "📈 Performance des modèles":
-
+ 
     st.markdown("""
     <div class="hero">
         <h1>📈 Comparaison des modèles</h1>
         <p>Évaluation rigoureuse des 4 algorithmes sur le jeu de test — Métriques, ROC, Precision-Recall</p>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     if not models:
         st.error("Aucun modèle trouvé dans le dossier models/.")
     else:
@@ -612,27 +617,27 @@ elif page == "📈 Performance des modèles":
                 "ROC-AUC"   : round(roc_auc_score(y_test, y_proba), 4),
                 "PR-AUC"    : round(average_precision_score(y_test, y_proba), 4),
             })
-
+ 
         df_results = pd.DataFrame(rows).set_index("Modèle")
-
+ 
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.markdown('<div class="section-title">Tableau des performances</div>', unsafe_allow_html=True)
-
+ 
         def color_max(s):
             is_max = s == s.max()
             return ['background-color:#DCFCE7; font-weight:700' if v else '' for v in is_max]
-
+ 
         st.dataframe(
             df_results.style.apply(color_max, axis=0).format("{:.4f}"),
             use_container_width=True
         )
         st.markdown('</div>', unsafe_allow_html=True)
-
+ 
         # Courbes ROC + PR côte à côte
         col1, col2 = st.columns(2)
-
+ 
         colors_models = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12']
-
+ 
         with col1:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Courbes ROC</div>', unsafe_allow_html=True)
@@ -652,7 +657,7 @@ elif page == "📈 Performance des modèles":
             st.pyplot(fig)
             plt.close()
             st.markdown('</div>', unsafe_allow_html=True)
-
+ 
         with col2:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Courbes Precision-Recall</div>', unsafe_allow_html=True)
@@ -673,7 +678,7 @@ elif page == "📈 Performance des modèles":
             st.pyplot(fig)
             plt.close()
             st.markdown('</div>', unsafe_allow_html=True)
-
+ 
         # Matrices de confusion
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
         st.markdown('<div class="section-title">Matrices de confusion</div>', unsafe_allow_html=True)
@@ -696,49 +701,56 @@ elif page == "📈 Performance des modèles":
         st.pyplot(fig)
         plt.close()
         st.markdown('</div>', unsafe_allow_html=True)
-
-
+ 
+ 
 # ─────────────────────────────────────────────
 #  PAGE 4 — VARIABLES INFLUENTES
 # ─────────────────────────────────────────────
 elif page == "🔍 Variables influentes":
-
+ 
     st.markdown("""
     <div class="hero">
         <h1>🔍 Variables influentes</h1>
         <p>Comprendre pourquoi le modèle prédit le churn — Feature Importance & Permutation Importance</p>
     </div>
     """, unsafe_allow_html=True)
-
+ 
     if best_model is None or not feature_names:
         st.error("Modèle ou features introuvables.")
     else:
         from sklearn.inspection import permutation_importance as perm_imp_fn
-
+ 
         tab1, tab2 = st.tabs(["📊 Feature Importance (XGBoost)", "🔄 Permutation Importance"])
-
+ 
         with tab1:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Importance native — Gain moyen sur tous les splits</div>', unsafe_allow_html=True)
-
-            importances = best_model.feature_importances_
+ 
+            xgb_model = models.get("XGBoost") or models.get("XGBoost ".strip())
+            if xgb_model is None:
+                 st.error("Modèle XGBoost introuvable.")
+            else:
+             importances = xgb_model.feature_importances_
             feat_df = pd.DataFrame({'Feature': feature_names, 'Importance': importances})\
-                        .sort_values('Importance', ascending=False).head(20)
-
+               .sort_values('Importance', ascending=False).head(20)
+ 
             fig, ax = plt.subplots(figsize=(8, 7))
             bars = ax.barh(feat_df['Feature'][::-1], feat_df['Importance'][::-1],
                            color=[ACCENT if i < 3 else PRIMARY if i < 8 else NEUTRAL
                                   for i in range(len(feat_df)-1, -1, -1)],
                            edgecolor='none', height=0.65)
             ax.set_xlabel('Importance (Gain)', fontsize=9)
+            plt.setp(ax.get_yticklabels(), color='white')
+            ax.xaxis.label.set_color('white')
+            ax.tick_params(axis='x', colors='white')
             ax.set_facecolor(SURFACE)
             fig.patch.set_alpha(0)
             plt.tight_layout()
             st.pyplot(fig)
             plt.close()
-
+ 
             st.markdown("**Lecture :** 🔴 Top 3 variables · 🔵 Top 8 · ⬜ Autres")
-
+ 
             col1, col2 = st.columns(2)
             with col1:
                 st.markdown("**Top 10 variables :**")
@@ -759,11 +771,11 @@ elif page == "🔍 Variables influentes":
                 | `login_frequency` | Engagement comportemental |
                 """)
             st.markdown('</div>', unsafe_allow_html=True)
-
+ 
         with tab2:
             st.markdown('<div class="section-card">', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Permutation Importance — Perte réelle de ROC-AUC</div>', unsafe_allow_html=True)
-
+ 
             with st.spinner("Calcul en cours (10 répétitions)..."):
                 perm = perm_imp_fn(
                     best_model, X_test, y_test,
@@ -772,24 +784,27 @@ elif page == "🔍 Variables influentes":
                     random_state=42,
                     n_jobs=-1
                 )
-
+ 
             perm_df = pd.DataFrame({
                 'Feature': feature_names,
                 'mean': perm.importances_mean,
                 'std' : perm.importances_std
             }).sort_values('mean', ascending=False).head(20)
-
+ 
             fig, ax = plt.subplots(figsize=(8, 7))
             ax.barh(perm_df['Feature'][::-1], perm_df['mean'][::-1],
                     xerr=perm_df['std'][::-1],
                     color=PRIMARY, alpha=0.85, edgecolor='none', height=0.6,
                     error_kw=dict(ecolor=ACCENT, capsize=3))
             ax.set_xlabel('Perte de ROC-AUC (± écart-type)', fontsize=9)
+            plt.setp(ax.get_yticklabels(), color='white')
+            ax.xaxis.label.set_color('white')
+            ax.tick_params(axis='x', colors='white')
             ax.set_facecolor(SURFACE)
             fig.patch.set_alpha(0)
             plt.tight_layout()
             st.pyplot(fig)
             plt.close()
-
+ 
             st.info("La Permutation Importance est agnostique au modèle : elle mesure l'impact réel de chaque variable sur la performance, en la mélangeant aléatoirement. Plus la perte est grande, plus la variable est indispensable.")
             st.markdown('</div>', unsafe_allow_html=True)
