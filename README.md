@@ -1,29 +1,29 @@
-# Customer Churn Prediction using Machine Learning & Deep Learning
+# Prédiction du Churn Client avec le Machine Learning et le Deep Learning
 
-## Project Overview
+## Présentation du projet
 
-This project aims to predict customer churn for a subscription-based business using Machine Learning and Deep Learning techniques.
+Ce projet a pour objectif de prédire le **churn client** (résiliation d'un abonnement) à l'aide de techniques de **Machine Learning** et de **Deep Learning**.
 
-The objective is to identify customers who are likely to cancel their subscription in order to support customer retention strategies, improve customer retention and reduce revenue loss.
+L'objectif est d'identifier les clients susceptibles de quitter l'entreprise afin de mettre en place des actions de fidélisation ciblées, d'améliorer la rétention des clients et de limiter les pertes de revenus.
 
-The project follows a complete Data Science workflow, from data exploration to the deployment of an interactive dashboard.
-
----
-
-## Business Problem
-
-Customer churn is a major challenge for subscription-based companies. Retaining existing customers is generally less expensive than acquiring new ones.
-
-This project develops a predictive model capable of identifying customers at risk of churn, enabling businesses to take proactive retention actions.
-
-The problem is formulated as a binary classification task:
-
-- **0** → Customer stays
-- **1** → Customer churns
+Le projet suit l'ensemble du cycle de vie d'un projet de Data Science, depuis l'analyse exploratoire des données jusqu'au développement d'un tableau de bord interactif.
 
 ---
 
-## Project Structure
+## Problématique métier
+
+Le churn client représente un enjeu majeur pour les entreprises fonctionnant sur un modèle d'abonnement. Conserver un client existant est généralement moins coûteux que d'en acquérir un nouveau.
+
+Ce projet vise à développer un modèle capable de prédire les clients présentant un risque élevé de résiliation afin d'aider les équipes métier à anticiper ce risque et à mettre en œuvre des actions de rétention adaptées.
+
+Le problème est formulé comme une **classification binaire** :
+
+- **0** → Le client reste fidèle
+- **1** → Le client résilie son abonnement
+
+---
+
+## Structure du projet
 
 ```text
 Customer-Churn-AI/
@@ -56,15 +56,15 @@ Customer-Churn-AI/
 
 ---
 
-## Dataset
+## Jeu de données
 
-The project uses a synthetic business dataset containing **10,000 customers**.
+Le projet s'appuie sur un **jeu de données synthétique** composé de **10 000 clients**.
 
-The dataset includes demographic, behavioral, financial and customer satisfaction information.
+Il contient des informations démographiques, comportementales, financières ainsi que des indicateurs de satisfaction client.
 
-### Main Features
+### Variables principales
 
-### Customer Profile
+### Profil client
 
 - customer_id
 - gender
@@ -73,13 +73,13 @@ The dataset includes demographic, behavioral, financial and customer satisfactio
 - city
 - customer_segment
 
-### Subscription
+### Abonnement
 
 - contract_type
 - signup_channel
 - tenure_months
 
-### Customer Activity
+### Activité du client
 
 - monthly_logins
 - weekly_active_days
@@ -88,7 +88,7 @@ The dataset includes demographic, behavioral, financial and customer satisfactio
 - usage_growth_rate
 - last_login_days_ago
 
-### Financial Information
+### Informations financières
 
 - monthly_fee
 - total_revenue
@@ -97,13 +97,13 @@ The dataset includes demographic, behavioral, financial and customer satisfactio
 - discount_applied
 - price_increase_last_3m
 
-### Customer Support
+### Support client
 
 - support_tickets
 - avg_resolution_time
 - complaint_type
 
-### Customer Satisfaction
+### Satisfaction client
 
 - csat_score
 - nps_score
@@ -115,77 +115,81 @@ The dataset includes demographic, behavioral, financial and customer satisfactio
 - marketing_click_rate
 - referral_count
 
-### Target Variable
+### Variable cible
 
-- **0** → Customer stays
-- **1** → Customer churns
-
----
-
-## Project Notebooks
-
-### 01 – Exploratory Data Analysis (EDA)
-
-This notebook focuses on understanding the dataset through:
-
-- Dataset overview
-- Descriptive statistics
-- Missing value analysis
-- Duplicate detection
-- Churn distribution
-- Univariate and multivariate analyses
-- Correlation analysis
-- Data visualization
+- **0** → Client fidèle
+- **1** → Client en churn
 
 ---
 
-### 02 – Data Preprocessing
+## Notebooks du projet
 
-The preprocessing pipeline prepares the data for Machine Learning.
+### 01 – Analyse exploratoire des données (EDA)
 
-Main steps include:
+Cette étape permet de mieux comprendre le jeu de données grâce à :
 
-- Duplicate removal
-- Missing value verification
-- Numerical and categorical feature separation
-- Feature scaling
-- One-Hot Encoding
-- Train/Test split
-- Random Under Sampling (RUS)
-
-After preprocessing:
-
-- **51 input features**
-- **19 numerical variables**
-- **32 categorical variables (One-Hot Encoding)**
+- Présentation du jeu de données
+- Statistiques descriptives
+- Recherche des valeurs manquantes
+- Détection des doublons
+- Analyse de la distribution du churn
+- Analyse univariée et multivariée
+- Corrélations entre variables
+- Test du Chi²
+- Coefficient de V de Cramér
+- Visualisations (boxplots, heatmaps...)
 
 ---
 
-### 03 – Modeling
+### 02 – Prétraitement des données
 
-Several predictive models were trained and compared.
+Cette étape prépare les données pour l'entraînement des modèles.
 
-Machine Learning models:
+Principales étapes :
 
-- Logistic Regression
+- Suppression des doublons
+- Traitement des valeurs manquantes
+- Séparation des variables numériques et catégorielles
+- Standardisation des variables numériques
+- Encodage One-Hot des variables catégorielles
+- Découpage Train/Test
+- Rééquilibrage des classes avec **Random Under Sampling (RUS)**
+
+Après prétraitement :
+
+- **51 variables d'entrée**
+- **19 variables numériques**
+- **32 variables catégorielles issues du One-Hot Encoding**
+
+---
+
+### 03 – Modélisation
+
+Plusieurs modèles ont été entraînés et comparés.
+
+#### Modèles de Machine Learning
+
+- Régression Logistique
 - Random Forest
 - XGBoost
 
-Deep Learning model:
+#### Modèle de Deep Learning
 
 - Multi-Layer Perceptron (MLP)
 
-Different imbalance handling strategies were evaluated.
+Différentes stratégies de rééquilibrage des classes ont été évaluées.
 
-The final selected model is **Random Forest combined with Random Under Sampling (RUS)**.
+Le modèle retenu est :
+
+**Random Forest + Random Under Sampling (RUS)**
 
 ---
 
-### 04 – Model Evaluation
+### 04 – Évaluation du modèle
 
-The evaluation notebook validates the selected model using complementary evaluation techniques.
+Cette étape permet de valider les performances du modèle retenu.
 
-Performance metrics:
+#### Métriques d'évaluation
 
 - Accuracy
 - Precision
@@ -194,15 +198,15 @@ Performance metrics:
 - ROC-AUC
 - Average Precision (PR-AUC)
 
-Additional analyses:
+#### Analyses réalisées
 
-- Confusion Matrix
-- ROC Curve
-- Precision-Recall Curve
-- Decision Threshold Optimization
-- 5-Fold Cross Validation
+- Matrice de confusion
+- Courbe ROC
+- Courbe Precision-Recall
+- Optimisation du seuil de décision
+- Validation croisée (5-Fold Cross Validation)
 
-Model interpretability:
+#### Interprétabilité du modèle
 
 - Feature Importance
 - Permutation Importance
@@ -210,57 +214,57 @@ Model interpretability:
 - SHAP Beeswarm
 - SHAP Waterfall
 
-These analyses provide both global and local explanations of the model predictions.
+Ces analyses permettent d'expliquer les prédictions du modèle aussi bien à un niveau global qu'à l'échelle d'un client.
 
 ---
 
-## Interactive Dashboard
+## Tableau de bord interactif
 
-An interactive Streamlit dashboard was developed to make the predictive model accessible to business users.
+Un tableau de bord interactif développé avec **Streamlit** permet d'utiliser le modèle de manière intuitive.
 
-The application includes:
+Le tableau de bord comprend plusieurs modules.
 
-### Overview
+### Vue d'ensemble
 
-- Business KPIs
-- Churn distribution
-- Customer segment analysis
-- Contract type analysis
-- Business impact estimation
-- ROI estimation
+- Indicateurs clés (KPI)
+- Distribution du churn
+- Analyse des segments clients
+- Analyse des types de contrat
+- Estimation de l'impact métier
+- Estimation du retour sur investissement (ROI)
 
-### Customer Prediction
+### Prédiction d'un client
 
-Users can simulate a customer profile and obtain:
+L'utilisateur peut simuler le profil d'un client et obtenir :
 
-- Churn probability
-- Predicted class
-- Risk level
-- Risk factors
-- CRM recommendations
-- Estimated revenue at risk
+- La probabilité de churn
+- La classe prédite
+- Le niveau de risque
+- Les principaux facteurs de risque
+- Des recommandations CRM
+- Le revenu potentiellement à risque
 
-### Model Performance
+### Évaluation des modèles
 
-Comparison of the trained models through:
+Comparaison des modèles selon :
 
-- Evaluation metrics
-- ROC Curves
-- Precision-Recall Curves
-- Confusion Matrices
+- Les métriques d'évaluation
+- Les courbes ROC
+- Les courbes Precision-Recall
+- Les matrices de confusion
 
-### Feature Analysis
+### Analyse des variables
 
-Visualization of:
+Visualisation de :
 
 - Feature Importance
 - Permutation Importance
 
-to better understand the variables influencing churn prediction.
+afin de mieux comprendre les variables utilisées par le modèle.
 
 ---
 
-## Technologies
+## Technologies utilisées
 
 - Python
 - Pandas
@@ -280,39 +284,39 @@ to better understand the variables influencing churn prediction.
 
 ## Installation
 
-Clone the repository:
+Cloner le dépôt :
 
 ```bash
-git clone https://github.com/yourusername/customer-churn-ai.git
+git clone https://github.com/votre-utilisateur/customer-churn-ai.git
 ```
 
-Navigate to the project folder:
+Se placer dans le dossier du projet :
 
 ```bash
 cd customer-churn-ai
 ```
 
-Create a virtual environment:
+Créer un environnement virtuel :
 
 ```bash
 python -m venv .venv
 ```
 
-Activate the environment.
+Activer l'environnement.
 
-Windows:
+### Windows
 
 ```bash
 .venv\Scripts\activate
 ```
 
-Linux / macOS:
+### Linux / macOS
 
 ```bash
 source .venv/bin/activate
 ```
 
-Install the dependencies:
+Installer les dépendances :
 
 ```bash
 pip install -r requirements.txt
@@ -320,9 +324,9 @@ pip install -r requirements.txt
 
 ---
 
-## Running the Project
+## Exécution du projet
 
-Execute the notebooks in the following order:
+Exécuter les notebooks dans l'ordre suivant :
 
 ```text
 01_EDA.ipynb
@@ -334,7 +338,7 @@ Execute the notebooks in the following order:
 04_Evaluation.ipynb
 ```
 
-Launch the Streamlit dashboard:
+Lancer ensuite le tableau de bord :
 
 ```bash
 streamlit run dashboard/app.py
@@ -342,27 +346,32 @@ streamlit run dashboard/app.py
 
 ---
 
-## Results
+## Résultats
 
-The comparative analysis showed that **Random Forest combined with Random Under Sampling (RUS)** achieved the best balance between predictive performance, robustness and interpretability.
+L'étude comparative a montré que **Random Forest associé au Random Under Sampling (RUS)** offre le meilleur compromis entre :
 
-The project demonstrates:
+- capacité de détection des churners (Recall),
+- équilibre global des performances (F1-Score),
+- qualité de discrimination (ROC-AUC),
+- interprétabilité du modèle.
 
-- End-to-end Data Science workflow
-- Machine Learning and Deep Learning comparison
-- Explainable Artificial Intelligence
-- Business-oriented model evaluation
-- Interactive decision-support dashboard
+Ce projet illustre un workflow complet de Data Science comprenant :
+
+- l'analyse exploratoire des données ;
+- le prétraitement des données ;
+- la comparaison de modèles de Machine Learning et de Deep Learning ;
+- l'évaluation et l'interprétation des prédictions ;
+- le développement d'un tableau de bord d'aide à la décision.
 
 ---
 
-## Authors
+## Auteurs
 
 - **Riad Boutria**
 - **Imen Souidi**
 
 ---
 
-## License
+## Licence
 
-This project was developed for educational purposes.
+Ce projet a été réalisé dans un cadre pédagogique.
